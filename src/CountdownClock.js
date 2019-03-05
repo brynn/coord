@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { convertSeconds, calculateTimeofCommit } from './utils';
+import { convertSeconds, getDataFromUrl, calculateTimeofCommit } from './utils';
 
 class CountdownClock extends Component {
   constructor() {
@@ -7,6 +7,8 @@ class CountdownClock extends Component {
     this.state = {
       time: {},
       countdownDate: null,
+      data: [],
+      message: '',
     };
     this.timer = 0;
     this.tick = this.tick.bind(this);
@@ -14,8 +16,8 @@ class CountdownClock extends Component {
   }
 
   async componentDidMount() {
-    const countdownDate = await calculateTimeofCommit();
-    this.setState({ countdownDate });
+    const data = await getDataFromUrl();
+    this.setState({ data, countdownDate: calculateTimeofCommit(data) });
     this.timer = setInterval(this.tick, 1000);
   }
 
@@ -24,16 +26,21 @@ class CountdownClock extends Component {
     const distance = this.state.countdownDate - now;
     if (distance < 0) {
       clearInterval(this.timer);
+      this.setState({ message: '2000th Commit reached!' });
     }
     this.setState({ time: convertSeconds(distance) });
   }
 
-  addCommit() {}
+  addCommit() {
+    const now = Math.floor(new Date().getTime() / 1000);
+    const data = [now, ...this.state.data];
+    this.setState({ data, countdownDate: calculateTimeofCommit(data) });
+  }
 
   render() {
     return (
       <div>
-        <h3>Time Until 2000th Commit:</h3>
+        <h2>Time Until 2000th Commit:</h2>
         {this.state.time.days ? (
           <p>
             {this.state.time.days} days {this.state.time.hours} hours{' '}
@@ -42,7 +49,8 @@ class CountdownClock extends Component {
         ) : (
           <p>Loading...</p>
         )}
-        <button onClick={this.addCommit}>Commit</button>
+        <p>{this.state.message}</p>
+        <button onClick={this.addCommit}>Add Another Commit</button>
       </div>
     );
   }

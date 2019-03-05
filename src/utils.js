@@ -8,10 +8,18 @@ export const convertSeconds = secs => {
   return { days, hours, minutes, seconds };
 };
 
-export const calculateTimeofCommit = async () => {
-  const { data } = await axios.get(
-    'https://api.staging.coord.co/codechallenge/commits'
-  );
+export const getDataFromUrl = async () => {
+  try {
+    const { data } = await axios.get(
+      'https://api.staging.coord.co/codechallenge/commits'
+    );
+    return data;
+  } catch (err) {
+    console.log('error reading remote URL');
+  }
+};
+
+export const calculateTimeofCommit = data => {
   // multiply by 1000 to get milliseconds
   const firstCommit = data[data.length - 1] * 1000;
   const lastCommit = data[0] * 1000;
