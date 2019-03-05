@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class CountdownClock extends Component {
   constructor() {
@@ -6,6 +7,8 @@ class CountdownClock extends Component {
     this.state = {
       time: {},
     };
+    this.timer = 0;
+    this.tick = this.tick.bind(this);
   }
 
   convertSeconds(secs) {
@@ -16,15 +19,27 @@ class CountdownClock extends Component {
     return { days, hours, minutes, seconds };
   }
 
-  componentDidMount() {}
+  tick() {
+    const countdownDate = new Date('Jan 5, 2021 15:37:25').getTime();
+    const now = new Date().getTime();
+    const distance = countdownDate - now;
+    if (distance < 0) {
+      clearInterval(this.timer);
+    }
+    this.setState({ time: this.convertSeconds(distance) });
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(this.tick, 1000);
+  }
 
   render() {
     return (
       <div>
         <h3>Time Until 2000th Commit:</h3>
         <p>
-          {this.state.time.days}days {this.state.time.hours}hours{' '}
-          {this.state.time.minutes}minutes {this.state.time.seconds}seconds
+          {this.state.time.days} days {this.state.time.hours} hours{' '}
+          {this.state.time.minutes} minutes {this.state.time.seconds} seconds
         </p>
       </div>
     );
