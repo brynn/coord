@@ -26,7 +26,7 @@ class CountdownClock extends Component {
     const distance = this.state.countdownDate - now;
     if (distance < 0) {
       clearInterval(this.timer);
-      this.setState({ message: '2000th Commit reached!' });
+      this.setState({ message: '🎉 2000th commit reached! 🎉' });
     }
     this.setState({ time: convertSeconds(distance) });
   }
@@ -40,17 +40,20 @@ class CountdownClock extends Component {
   render() {
     return (
       <div>
-        <h2>Time Until 2000th Commit:</h2>
+        <h2>Time Until 2000th Commit</h2>
         {this.state.time.days ? (
           <p>
-            {this.state.time.days} days {this.state.time.hours} hours{' '}
+            ⏲️ {this.state.time.days} days {this.state.time.hours} hours{' '}
             {this.state.time.minutes} minutes {this.state.time.seconds} seconds
+            ⏲️
           </p>
         ) : (
-          <p>Loading...</p>
+          <p>⌛ Loading... ⌛</p>
         )}
         <p>{this.state.message}</p>
-        <button onClick={this.addCommit}>Add Another Commit</button>
+        <button type="button" onClick={this.addCommit}>
+          ➕Add Another Commit
+        </button>
       </div>
     );
   }
